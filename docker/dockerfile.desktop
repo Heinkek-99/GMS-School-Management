@@ -1,0 +1,31 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copier les fichiers de solution
+COPY ["src/GMS.Desktop/GMS.Desktop.csproj", "GMS.Desktop/"]
+COPY ["src/GMS.Application/GMS.Application.csproj", "GMS.Application/"]
+COPY ["src/GMS.Infrastructure/GMS.Infrastructure.csproj", "GMS.Infrastructure/"]
+COPY ["src/GMS.Domain/GMS.Domain.csproj", "GMS.Domain/"]
+COPY ["src/GMS.Shared/GMS.Shared.csproj", "GMS.Shared/"]
+
+# Restaurer les dépendances
+RUN dotnet restore "GMS.Desktop/GMS.Desktop.csproj"
+
+# Copier tout le code
+COPY src/ .
+
+# Build
+WORKDIR "/src/GMS.Desktop"
+RUN dotnet build "GMS.Desktop.csproj" -c Release -o /app/build
+
+# Stage 2: Publish
+FROM build AS publish
+RUN dotnet publish "GMS.Desktop.csproj" -c Release -o /app/publish /p:UseAppHost=true
+
+# Stage 3: Runtime
+FROM mcr.microsoft.com/dotnet/runtime:8.0
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+ENTRYPOINT ["dotnet", "GMS.Desktop.dll"]

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: gms-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Azerty12
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - gms-network
+    restart: unless-stopped
+
+  gms-desktop:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.desktop
+    container_name: gms-desktop-app
+    depends_on:
+      - sqlserver
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=GmsDb;User=sa;Password=GmsP@ssw0rd2024!;TrustServerCertificate=True
+    networks:
+      - gms-network
+
+volumes:
+  sqlserver-data:
+    driver: local
+
+networks:
+  gms-network:
+    driver: bridge
