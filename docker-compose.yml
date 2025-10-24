@@ -25,7 +25,7 @@ services:
     depends_on:
       - sqlserver
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=GmsDb;User=sa;Password=GmsP@ssw0rd2024!;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=GmsDb;User=sa;Password=Azerty12;TrustServerCertificate=True
     networks:
       - gms-network
 
