@@ -1,4 +1,4 @@
-name: Build & Test
+name: CI/CD Pipeline
 
 on:
   push:
@@ -11,10 +11,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
     
@@ -25,13 +25,18 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test --no-build --configuration Release --verbosity normal  --collect:"XPlat Code Coverage"
     
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage.xml
+      
     - name: Publish
       run: dotnet publish src/GMS.Desktop/GMS.Desktop.csproj -c Release -o ./publish
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: gms-desktop-build
+        name: gms-desktop-${{ github.sha }}
         path: ./publish
