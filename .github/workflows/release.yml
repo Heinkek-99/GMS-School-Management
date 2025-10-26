@@ -1,0 +1,26 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build installer
+      run: |
+        dotnet publish -c Release
+        msbuild GMS.Installer.wixproj /p:Configuration=Release
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./GMS-Setup.msi
+          ./CHANGELOG.md
+        body_path: ./RELEASE_NOTES.md
