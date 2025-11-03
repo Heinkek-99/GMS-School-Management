@@ -1,5 +1,5 @@
 using GMS.Application.Common;
-using GMS.Application.Features.Familles.Commands;
+using GMS.Application.Features.Familles.Commands.CreateFamille;
 using GMS.Domain.Entities;
 using GMS.Infrastructure.Repositories;
 using MediatR;
@@ -32,7 +32,11 @@ public class CreateFamilleHandler : IRequestHandler<CreateFamilleCommand, Result
             EmailMere = request.EmailMere,
             Adresse = request.Adresse,
             Ville = request.Ville,
-            CodePostal = request.CodePostal
+            CodePostal = request.CodePostal,
+            Pays = request.Pays,
+            CreatedAt = DateTime.UtcNow,
+            CreatedBy = "System" // TODO: Récupérer user connecté
+ 
         };
 
         await _familleRepo.AddAsync(famille);
