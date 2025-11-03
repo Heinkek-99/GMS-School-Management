@@ -16,6 +16,11 @@ public class FraisConfiguration : IEntityTypeConfiguration<Frais>
         builder.Property(f => f.Statut).IsRequired().HasMaxLength(20).HasDefaultValue("Impayé");
         builder.Property(f => f.Observations).HasMaxLength(500);
 
+        // Ignorer les propriétés calculées
+        builder.Ignore(f => f.Solde);
+        builder.Ignore(f => f.EstPaye);
+        builder.Ignore(f => f.EstPartiel);
+
         // Relations
         builder.HasOne(f => f.Eleve)
             .WithMany(e => e.Frais)

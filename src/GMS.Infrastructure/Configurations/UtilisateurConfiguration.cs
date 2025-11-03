@@ -19,6 +19,8 @@ public class UtilisateurConfiguration : IEntityTypeConfiguration<Utilisateur>
         builder.Property(u => u.Role).IsRequired().HasMaxLength(50);
         builder.Property(u => u.EstActif).HasDefaultValue(true);
 
+        builder.Ignore(u => u.NomComplet);
+        
         // Index
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();

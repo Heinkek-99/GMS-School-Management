@@ -26,6 +26,10 @@ public class ClasseConfiguration : IEntityTypeConfiguration<Classe>
             .HasForeignKey(e => e.ClasseId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        //Ignorer les propriétés calculées
+        builder.Ignore(c => c.EffectifActuel);
+        builder.Ignore(c => c.EstPleine);
+
         // Index
         builder.HasIndex(c => c.Nom).IsUnique();
         builder.HasIndex(c => c.Ordre);

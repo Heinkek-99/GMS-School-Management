@@ -24,6 +24,12 @@ public class FamilleConfiguration : IEntityTypeConfiguration<Famille>
         builder.Property(f => f.Ville).HasMaxLength(100);
         builder.Property(f => f.CodePostal).HasMaxLength(10);
         builder.Property(f => f.Pays).HasMaxLength(100).HasDefaultValue("Côte d'Ivoire");
+        
+        // Ignorer les propriétés calculées
+        builder.Ignore(f => f.TotalDu);
+        builder.Ignore(f => f.TotalPaye);
+        builder.Ignore(f => f.Solde);
+        builder.Ignore(f => f.NombreEnfants);
 
         // Relations
         builder.HasMany(f => f.Eleves)

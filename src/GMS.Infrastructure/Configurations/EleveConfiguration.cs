@@ -19,6 +19,13 @@ public class EleveConfiguration : IEntityTypeConfiguration<Eleve>
         builder.Property(e => e.PhotoPath).HasMaxLength(500);
         builder.Property(e => e.Statut).IsRequired().HasMaxLength(20).HasDefaultValue("Actif");
 
+        // Ignorer les propriétés calculées
+        builder.Ignore(e => e.NomComplet);
+        builder.Ignore(e => e.Age);
+        builder.Ignore(e => e.TotalFrais);
+        builder.Ignore(e => e.TotalPaye);
+        builder.Ignore(e => e.Solde);
+
         // Relations
         builder.HasOne(e => e.Famille)
             .WithMany(f => f.Eleves)

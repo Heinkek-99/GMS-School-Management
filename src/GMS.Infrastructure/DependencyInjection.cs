@@ -16,37 +16,19 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+
         // DbContext
         services.AddDbContext<GmsDbContext>(options =>
-        {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            options.UseSqlServer(connectionString, sqlOptions =>
-            {
-                sqlOptions.MigrationsAssembly(typeof(GmsDbContext).Assembly.FullName);
-                sqlOptions.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: null);
-            });
-
-            // Enable sensitive data logging in development
-#if DEBUG
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
-#endif
-        });
-
-        // Repositories
+            options.UseSqlServer(
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(GmsDbContext).Assembly.FullName)
+            ));
+        
+        // Repositories (si vous utilisez le Repository Pattern)
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddScoped<IFamilleRepository, FamilleRepository>();
-        services.AddScoped<IEleveRepository, EleveRepository>();
-        services.AddScoped<IPaiementRepository, PaiementRepository>();
 
-        // Services
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IMatriculeGenerator, MatriculeGenerator>();
-        services.AddScoped<INumeroPaiementGenerator, NumeroPaiementGenerator>();
 
         return services;
+
     }
 }
