@@ -18,6 +18,7 @@ public static class DependencyInjection
     {
         // DbContext
         services.AddDbContext<GmsDbContext>(options =>
+<<<<<<< Updated upstream
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             options.UseSqlServer(connectionString, sqlOptions =>
@@ -47,6 +48,16 @@ public static class DependencyInjection
         services.AddScoped<IMatriculeGenerator, MatriculeGenerator>();
         services.AddScoped<INumeroPaiementGenerator, NumeroPaiementGenerator>();
 
+=======
+            options.UseSqlServer(
+                configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(GmsDbContext).Assembly.FullName)
+            ));
+        
+        // Repositories 
+        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+>>>>>>> Stashed changes
         return services;
     }
 }

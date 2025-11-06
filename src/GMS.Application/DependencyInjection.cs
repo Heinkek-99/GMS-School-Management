@@ -1,4 +1,5 @@
 using FluentValidation;
+using GMS.Application.Common.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -15,6 +16,10 @@ public static class DependencyInjection
 
         // FluentValidation
         services.AddValidatorsFromAssembly(assembly);
+
+        // Services
+        services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
 
         return services;
     }
