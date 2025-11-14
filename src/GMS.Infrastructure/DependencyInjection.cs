@@ -30,10 +30,10 @@ public static class DependencyInjection
             });
 
             // Enable sensitive data logging in development
-        #if DEBUG
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
-        #endif
+        // #if DEBUG
+        //     options.EnableSensitiveDataLogging();
+        //     options.EnableDetailedErrors();
+        // #endif
         });
 
         // Repositories

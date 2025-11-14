@@ -16,7 +16,7 @@ wait_for_sqlserver() {
         echo "   Tentative $attempt/$max_attempts..."
         
         if /opt/mssql-tools/bin/sqlcmd \
-            -S sqlserver,1433 \
+            -S sqlserver,11433 \
             -U sa \
             -P "Azerty12" \
             -Q "SELECT 1" > /dev/null 2>&1; then
@@ -37,7 +37,7 @@ create_database() {
     echo "📊 Création de la base de données GmsDb..."
     
     /opt/mssql-tools/bin/sqlcmd \
-        -S sqlserver,1433 \
+        -S sqlserver,11433 \
         -U sa \
         -P "Azerty12" \
         -Q "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'GmsDb') CREATE DATABASE GmsDb"

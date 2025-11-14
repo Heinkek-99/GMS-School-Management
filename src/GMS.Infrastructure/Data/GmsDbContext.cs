@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using GMS.Domain.Entities;
 
+using System.Reflection;
+
 namespace GMS.Infrastructure.Data;
 
 public class GmsDbContext : DbContext
@@ -10,6 +12,8 @@ public class GmsDbContext : DbContext
     }
 
     // DbSets
+    public DbSet<Ecole> Ecoles { get; set; }
+    public DbSet<Presence> Presences { get; set; }
     public DbSet<Utilisateur> Utilisateurs { get; set; }
     public DbSet<Famille> Familles { get; set; }
     public DbSet<Eleve> Eleves { get; set; }
@@ -27,28 +31,72 @@ public class GmsDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         base.OnModelCreating(modelBuilder);
 
-        // Appliquer toutes les configurations
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(GmsDbContext).Assembly);
+        // Appliquer toutes les configurations automatiquement
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        // Filtres globaux pour soft delete
-        modelBuilder.Entity<Utilisateur>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Famille>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Eleve>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Classe>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<AnneeScolaire>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Periode>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<TypeFrais>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Frais>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Paiement>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<VentilationPaiement>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Matiere>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Note>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<EmploiDuTemps>().HasQueryFilter(e => !e.IsDeleted);
+        // Appeler les données de seed
+        SeedData.Seed(modelBuilder);
+
+        // Configuration globale pour les décimaux (évite les avertissements)
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(decimal) || property.ClrType == typeof(decimal?))
+                {
+                    if (!property.GetPrecision().HasValue)
+                    {
+                        property.SetPrecision(18);
+                        property.SetScale(2);
+                    }
+                }
+            }
+        }
+
+
+        // Configuration globale pour DateTime (UTC par défaut)
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            foreach (var property in entityType.GetProperties())
+            {
+                if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                {
+                    property.SetValueConverter(
+                        new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
+                            v => v.ToUniversalTime(),
+                            v => DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                        )
+                    );
+                }
+            }
+        }
     }
 
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Sauvegarde synchrone avec mise à jour automatique des timestamps
+    /// </summary>
+    public override int SaveChanges()
+    {
+        UpdateTimestamps();
+        return base.SaveChanges();
+    }
+
+    /// <summary>
+    /// Sauvegarde asynchrone avec mise à jour automatique des timestamps
+    /// </summary>
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        UpdateTimestamps();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    /// <summary>
+    /// Met à jour automatiquement les timestamps (CreatedAt, UpdatedAt) des entités
+    /// </summary>
+    private void UpdateTimestamps()
     {
         // Mise à jour automatique des timestamps
         var entries = ChangeTracker.Entries()
@@ -62,6 +110,7 @@ public class GmsDbContext : DbContext
             if (entry.State == EntityState.Added)
             {
                 entity.CreatedAt = DateTime.UtcNow;
+                entity.UpdatedAt = DateTime.UtcNow;
             }
             else if (entry.State == EntityState.Modified)
             {
@@ -69,6 +118,5 @@ public class GmsDbContext : DbContext
             }
         }
 
-        return await base.SaveChangesAsync(cancellationToken);
     }
 }

@@ -11,7 +11,9 @@ public class VentilationPaiementConfiguration : IEntityTypeConfiguration<Ventila
         builder.ToTable("VentilationsPaiements");
         builder.HasKey(v => v.Id);
 
-        builder.Property(v => v.MontantAffecte).HasColumnType("decimal(18,2)").IsRequired();
+        builder.Property(v => v.MontantAffecte)
+            .HasColumnType("decimal(18,2)")
+            .IsRequired();
 
         // Relations
         builder.HasOne(v => v.Paiement)

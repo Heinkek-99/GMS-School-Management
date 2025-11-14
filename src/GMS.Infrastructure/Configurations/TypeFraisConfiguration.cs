@@ -24,6 +24,11 @@ public class TypeFraisConfiguration : IEntityTypeConfiguration<TypeFrais>
             .HasForeignKey(f => f.TypeFraisId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.HasOne(tf => tf.Ecole)
+            .WithMany(e => e.TypesFrais)
+            .HasForeignKey(tf => tf.EcoleId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Index
         builder.HasIndex(t => t.Code).IsUnique();
     }

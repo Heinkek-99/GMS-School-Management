@@ -31,9 +31,16 @@ public class FraisConfiguration : IEntityTypeConfiguration<Frais>
             .WithOne(v => v.Frais)
             .HasForeignKey(v => v.FraisId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+         builder.HasOne(f => f.Periode)
+            .WithMany(p => p.Frais)
+            .HasForeignKey(f => f.PeriodeId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Index
         builder.HasIndex(f => f.EleveId);
+        builder.HasIndex(f => f.TypeFraisId);
+         builder.HasIndex(f => f.PeriodeId);
         builder.HasIndex(f => f.Statut);
         builder.HasIndex(f => f.DateEcheance);
     }

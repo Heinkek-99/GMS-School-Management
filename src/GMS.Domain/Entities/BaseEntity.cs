@@ -8,4 +8,16 @@ public abstract class BaseEntity
     public string CreatedBy { get; set; }
     public string? UpdatedBy { get; set; }
     public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+
+    protected BaseEntity()
+    {
+        Id = Guid.NewGuid();
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
+        CreatedBy = "System";
+        UpdatedBy = "System";
+        IsDeleted = false;
+    }
+
 }

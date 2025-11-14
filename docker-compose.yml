@@ -19,16 +19,16 @@ services:
       - "1433:1433"
     volumes:
       - sqlserver-data:/var/opt/mssql
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+      - ./scripts/s/int.sql:/docker-entrypoint-initdb.d/int.sql:ro
     networks:
       - gms-network
     restart: unless-stopped
     healthcheck:
-      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P GmsP@ssw0rd2024! -Q "SELECT 1" || exit 1
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Azerty12 -Q "SELECT 1" || exit 1
       interval: 10s
       timeout: 3s
       retries: 10
-      start_period: 10s
+      start_period: 60s
 
   # ======================================
   # GMS APPLICATION (Build from source)
@@ -42,7 +42,7 @@ services:
     depends_on:
       - sqlserver
     environment:
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=GmsDb;User=sa;Password=Azerty12;TrustServerCertificate=True
+      - ConnectionStrings__DefaultConnection=Server=localhost,1433;Database=GmsDb;User=sa;Password=Azerty12;TrustServerCertificate=True
     networks:
       - gms-network
     restart: unless-stopped

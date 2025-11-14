@@ -17,10 +17,19 @@ public class UtilisateurConfiguration : IEntityTypeConfiguration<Utilisateur>
         builder.Property(u => u.Username).IsRequired().HasMaxLength(50);
         builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(250);
         builder.Property(u => u.Role).IsRequired().HasMaxLength(50);
-        builder.Property(u => u.EstActif).HasDefaultValue(true);
+        builder.Property(u => u.EstActif).IsRequired().HasDefaultValue(true);
+        builder.Property(u => u.PhotoPath).HasMaxLength(200);
 
-        // Index
+        builder.HasOne(u => u.Ecole)
+            .WithMany(s => s.Utilisateurs)
+            .HasForeignKey(u => u.EcoleId)
+            .OnDelete(DeleteBehavior.Restrict) // Empêche suppression école si utilisateurs existent
+            .IsRequired();
+
+        // Index pour performance
         builder.HasIndex(u => u.Username).IsUnique();
         builder.HasIndex(u => u.Email).IsUnique();
+        builder.HasIndex(u => u.EcoleId);
+        builder.HasIndex(u => u.EstActif);
     }
 }

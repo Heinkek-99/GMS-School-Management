@@ -5,13 +5,22 @@ namespace GMS.Application.Features.Eleves.Commands;
 
 public record CreateEleveCommand : IRequest<Result<Guid>>
 {
-    public Guid FamilleId { get; init; }
-    public string Nom { get; init; }
-    public string Prenom { get; init; }
-    public DateTime DateNaissance { get; init; }
-    public string LieuNaissance { get; init; }
-    public string Sexe { get; init; }
-    public Guid ClasseId { get; init; }
-    public Guid AnneeScolaireId { get; init; }
-    public string? PhotoPath { get; init; }
+ // Relation école
+        
+        // Informations personnelles
+        public string Nom { get; set; } = string.Empty;
+        public string Prenom { get; set; } = string.Empty;
+        public DateTime DateNaissance { get; set; }
+        public string LieuNaissance { get; set; } = string.Empty;
+        public string Sexe { get; set; }
+        public string? Nationalite { get; set; }
+        
+        // Relations
+        public Guid FamilleId { get; set; }
+        public Guid ClasseId { get; set; }
+        public Guid AnneeScolaireId { get; set; }
+                
+        // Photo (optionnel à la création, peut être ajouté plus tard)
+        public string PhotoPath { get; set; }
+        public string? PhotoFileName { get; set; }
 }

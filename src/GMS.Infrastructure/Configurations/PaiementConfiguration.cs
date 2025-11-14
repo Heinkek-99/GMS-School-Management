@@ -14,6 +14,7 @@ public class PaiementConfiguration : IEntityTypeConfiguration<Paiement>
         builder.Property(p => p.NumeroPaiement).IsRequired().HasMaxLength(50);
         builder.Property(p => p.Montant).HasColumnType("decimal(18,2)").IsRequired();
         builder.Property(p => p.ModePaiement).IsRequired().HasMaxLength(50);
+        builder.Property(p => p.DatePaiement).IsRequired();
         builder.Property(p => p.NumeroReference).HasMaxLength(100);
         builder.Property(p => p.Observations).HasMaxLength(500);
 
@@ -27,6 +28,7 @@ public class PaiementConfiguration : IEntityTypeConfiguration<Paiement>
             .WithOne(v => v.Paiement)
             .HasForeignKey(v => v.PaiementId)
             .OnDelete(DeleteBehavior.Cascade);
+        
 
         // Index
         builder.HasIndex(p => p.NumeroPaiement).IsUnique();

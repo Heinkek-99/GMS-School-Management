@@ -15,6 +15,7 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
         builder.Property(n => n.NoteSur).HasColumnType("decimal(5,2)").IsRequired().HasDefaultValue(20);
         builder.Property(n => n.TypeEvaluation).HasMaxLength(50);
         builder.Property(n => n.DateEvaluation).IsRequired();
+        builder.Ignore(n => n.NoteSur20); 
 
         // Relations
         builder.HasOne(n => n.Eleve)

@@ -1,0 +1,332 @@
+using GMS.Domain.Entities;
+using GMS.Domain.Entities.Enum;
+using GMS.Shared.Constants;
+using Microsoft.EntityFrameworkCore;
+
+namespace GMS.Infrastructure.Data
+{
+    public static class SeedData
+    {
+        public static void Seed(ModelBuilder modelBuilder)
+        {
+            // 1. ÉCOLE (point de départ)
+            var ecoleId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            modelBuilder.Entity<Ecole>().HasData(
+                new Ecole
+                {
+                    Id = ecoleId,
+                    Nom = "Complexe Scolaire Excellence",
+                    CodeEtablissement = "CSE-2025",
+                    TypeEtablissement = TypeEtablissement.Prive,
+                    Telephone = "+225 07 00 00 00 00",
+                    Email = "contact@excellence-ci.edu",
+                    Adresse = "Cocody Riviera Golf",
+                    Ville = "Abidjan",
+                    Pays = "Côte d'Ivoire",
+                    LogoPath = "/assets/logo.png",
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 2. UTILISATEURS
+            var adminId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+            var directeurId = Guid.Parse("33333333-3333-3333-3333-333333333333");
+            var secretaireId = Guid.Parse("44444444-4444-4444-4444-444444444444");
+            var comptableId = Guid.Parse("55555555-5555-5555-5555-555555555555");
+
+            modelBuilder.Entity<Utilisateur>().HasData(
+                new Utilisateur
+                {
+                    Id = adminId,
+                    SchoolId = ecoleId,
+                    Username = "admin",
+                    Email = "admin@excellence-ci.edu",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
+                    Nom = "KOUASSI",
+                    Prenom = "Jean",
+                    Role = Roles.Admin,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Utilisateur
+                {
+                    Id = directeurId,
+                    SchoolId = ecoleId,
+                    Username = "directeur",
+                    Email = "directeur@excellence-ci.edu",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Dir@123"),
+                    Nom = "BAMBA",
+                    Prenom = "Marie",
+                    Role = Roles.Directeur,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Utilisateur
+                {
+                    Id = secretaireId,
+                    SchoolId = ecoleId,
+                    Username = "secretaire",
+                    Email = "secretaire@excellence-ci.edu",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Sec@123"),
+                    Nom = "YAO",
+                    Prenom = "Awa",
+                    Role = Roles.Secretaire,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Utilisateur
+                {
+                    Id = comptableId,
+                    SchoolId = ecoleId,
+                    Username = "comptable",
+                    Email = "comptable@excellence-ci.edu",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Compta@123"),
+                    Nom = "DIALLO",
+                    Prenom = "Fatou",
+                    Role = Roles.Comptable,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 3. ANNÉE SCOLAIRE
+            var anneeScolaireId = Guid.Parse("66666666-6666-6666-6666-666666666666");
+            modelBuilder.Entity<AnneeScolaire>().HasData(
+                new AnneeScolaire
+                {
+                    Id = anneeScolaireId,
+                    SchoolId = ecoleId,
+                    Libelle = "2024-2025",
+                    DateDebut = new DateTime(2024, 9, 16),
+                    DateFin = new DateTime(2025, 6, 30),
+                    EstActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 4. PÉRIODES
+            var periode1Id = Guid.Parse("77777777-7777-7777-7777-777777777771");
+            var periode2Id = Guid.Parse("77777777-7777-7777-7777-777777777772");
+            var periode3Id = Guid.Parse("77777777-7777-7777-7777-777777777773");
+
+            modelBuilder.Entity<Periode>().HasData(
+                new Periode
+                {
+                    Id = periode1Id,
+                    AnneeScolaireId = anneeScolaireId,
+                    Libelle = "1er Trimestre",
+                    DateDebut = new DateTime(2024, 9, 16),
+                    DateFin = new DateTime(2024, 12, 20),
+                    Ordre = 1,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Periode
+                {
+                    Id = periode2Id,
+                    AnneeScolaireId = anneeScolaireId,
+                    Libelle = "2ème Trimestre",
+                    DateDebut = new DateTime(2025, 1, 6),
+                    DateFin = new DateTime(2025, 3, 28),
+                    Ordre = 2,
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Periode
+                {
+                    Id = periode3Id,
+                    AnneeScolaireId = anneeScolaireId,
+                    Libelle = "3ème Trimestre",
+                    DateDebut = new DateTime(2025, 4, 7),
+                    DateFin = new DateTime(2025, 6, 30),
+                    Ordre = 3,
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 5. CLASSES (Primaire et Collège)
+            var cpId = Guid.Parse("88888888-8888-8888-8888-888888888881");
+            var ce1Id = Guid.Parse("88888888-8888-8888-8888-888888888882");
+            var ce2Id = Guid.Parse("88888888-8888-8888-8888-888888888883");
+            var cm1Id = Guid.Parse("88888888-8888-8888-8888-888888888884");
+            var cm2Id = Guid.Parse("88888888-8888-8888-8888-888888888885");
+            var sixiemeId = Guid.Parse("88888888-8888-8888-8888-888888888886");
+
+            modelBuilder.Entity<Classe>().HasData(
+                new Classe { Id = cpId, SchoolId = ecoleId, AnneeScolaireId = anneeScolaireId, Code = "CP", Libelle = "Cours Préparatoire", Niveau = "Primaire", Ordre = 1, CapaciteMax = 35, CreatedAt = DateTime.UtcNow },
+                new Classe { Id = ce1Id, SchoolId = ecoleId, AnneeScolaireId = anneeScolaireId, Code = "CE1", Libelle = "Cours Élémentaire 1", Niveau = "Primaire", Ordre = 2, CapaciteMax = 35, CreatedAt = DateTime.UtcNow },
+                new Classe { Id = ce2Id, SchoolId = ecoleId, AnneeScolaireId = anneeScolaireId, Code = "CE2", Libelle = "Cours Élémentaire 2", Niveau = "Primaire", Ordre = 3, CapaciteMax = 35, CreatedAt = DateTime.UtcNow },
+                new Classe { Id = cm1Id, SchoolId = ecoleId, AnneeScolaireId = anneeScolaireId, Code = "CM1", Libelle = "Cours Moyen 1", Niveau = "Primaire", Ordre = 4, CapaciteMax = 40, CreatedAt = DateTime.UtcNow },
+                new Classe { Id = cm2Id, SchoolId = ecoleId, AnneeScolaireId = anneeScolaireId, Code = "CM2", Libelle = "Cours Moyen 2", Niveau = "Primaire", Ordre = 5, CapaciteMax = 40, CreatedAt = DateTime.UtcNow },
+                new Classe { Id = sixiemeId, SchoolId = ecoleId, AnneeScolaireId = anneeScolaireId, Code = "6EME", Libelle = "Sixième", Niveau = "Collège", Ordre = 6, CapaciteMax = 45, CreatedAt = DateTime.UtcNow }
+            );
+
+            // 6. TYPES DE FRAIS
+            var scolariteId = Guid.Parse("99999999-9999-9999-9999-999999999991");
+            var cantineId = Guid.Parse("99999999-9999-9999-9999-999999999992");
+            var transportId = Guid.Parse("99999999-9999-9999-9999-999999999993");
+
+            modelBuilder.Entity<TypeFrais>().HasData(
+                new TypeFrais { Id = scolariteId, SchoolId = ecoleId, Code = "SCOL", Libelle = "Scolarité", Description = "Frais de scolarité trimestriels", MontantDefaut = 150000, EstObligatoire = true, CreatedAt = DateTime.UtcNow },
+                new TypeFrais { Id = cantineId, SchoolId = ecoleId, Code = "CANT", Libelle = "Cantine", Description = "Frais de restauration", MontantDefaut = 75000, EstObligatoire = false, CreatedAt = DateTime.UtcNow },
+                new TypeFrais { Id = transportId, SchoolId = ecoleId, Code = "TRANS", Libelle = "Transport", Description = "Frais de transport scolaire", MontantDefaut = 50000, EstObligatoire = false, CreatedAt = DateTime.UtcNow }
+            );
+
+            // 7. FAMILLES
+            var famille1Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+            var famille2Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+
+            modelBuilder.Entity<Famille>().HasData(
+                new Famille
+                {
+                    Id = famille1Id,
+                    SchoolId = ecoleId,
+                    NomResponsable = "TRAORE",
+                    PrenomResponsable = "Mamadou",
+                    TelephonePrincipal = "+225 07 12 34 56 78",
+                    TelephoneSecondaire = "+225 05 87 65 43 21",
+                    Email = "traore.mamadou@gmail.com",
+                    Adresse = "Abobo Avocatier",
+                    Ville = "Abidjan",
+                    SoldeGlobal = -300000,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Famille
+                {
+                    Id = famille2Id,
+                    SchoolId = ecoleId,
+                    NomResponsable = "KOFFI",
+                    PrenomResponsable = "Adjoua",
+                    TelephonePrincipal = "+225 01 23 45 67 89",
+                    Email = "koffi.adjoua@yahoo.fr",
+                    Adresse = "Yopougon Sicogi",
+                    Ville = "Abidjan",
+                    SoldeGlobal = 0,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 8. ÉLÈVES
+            var eleve1Id = Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc");
+            var eleve2Id = Guid.Parse("dddddddd-dddd-dddd-dddd-dddddddddddd");
+            var eleve3Id = Guid.Parse("eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee");
+
+            modelBuilder.Entity<Eleve>().HasData(
+                new Eleve
+                {
+                    Id = eleve1Id,
+                    SchoolId = ecoleId,
+                    FamilleId = famille1Id,
+                    ClasseId = cm1Id,
+                    Matricule = "EXC-2024-001",
+                    Nom = "TRAORE",
+                    Prenom = "Ibrahim",
+                    DateNaissance = new DateTime(2014, 3, 15),
+                    LieuNaissance = "Abidjan",
+                    Sexe = "M",
+                    Statut = StatutEleve.Actif,
+                    DateInscription = new DateTime(2024, 9, 10),
+                    SoldeFinancier = -150000,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Eleve
+                {
+                    Id = eleve2Id,
+                    SchoolId = ecoleId,
+                    FamilleId = famille1Id,
+                    ClasseId = ce2Id,
+                    Matricule = "EXC-2024-002",
+                    Nom = "TRAORE",
+                    Prenom = "Fatoumata",
+                    DateNaissance = new DateTime(2016, 7, 22),
+                    LieuNaissance = "Abidjan",
+                    Sexe = "F",
+                    Statut = StatutEleve.Actif,
+                    DateInscription = new DateTime(2024, 9, 10),
+                    SoldeFinancier = -150000,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                },
+                new Eleve
+                {
+                    Id = eleve3Id,
+                    SchoolId = ecoleId,
+                    FamilleId = famille2Id,
+                    ClasseId = sixiemeId,
+                    Matricule = "EXC-2024-003",
+                    Nom = "KOFFI",
+                    Prenom = "Kouadio",
+                    DateNaissance = new DateTime(2013, 11, 5),
+                    LieuNaissance = "Yamoussoukro",
+                    Sexe = "M",
+                    Statut = StatutEleve.Actif,
+                    DateInscription = new DateTime(2024, 9, 12),
+                    SoldeFinancier = 0,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 9. FRAIS (Scolarité pour élèves)
+            modelBuilder.Entity<Frais>().HasData(
+                new Frais
+                {
+                    Id = Guid.NewGuid(),
+                    EleveId = eleve1Id,
+                    TypeFraisId = scolariteId,
+                    PeriodeId = periode1Id,
+                    Montant = 150000,
+                    MontantPaye = 0,
+                    Statut = StatutFrais.Impaye,
+                    DateEcheance = new DateTime(2024, 10, 31),
+                    Description = "Scolarité 1er Trimestre CM1",
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Frais
+                {
+                    Id = Guid.NewGuid(),
+                    EleveId = eleve2Id,
+                    TypeFraisId = scolariteId,
+                    PeriodeId = periode1Id,
+                    Montant = 150000,
+                    MontantPaye = 0,
+                    Statut = StatutFrais.Impaye,
+                    DateEcheance = new DateTime(2024, 10, 31),
+                    Description = "Scolarité 1er Trimestre CE2",
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Frais
+                {
+                    Id = Guid.NewGuid(),
+                    EleveId = eleve3Id,
+                    TypeFraisId = scolariteId,
+                    PeriodeId = periode1Id,
+                    Montant = 200000,
+                    MontantPaye = 200000,
+                    Statut = StatutFrais.Paye,
+                    DateEcheance = new DateTime(2024, 10, 31),
+                    Description = "Scolarité 1er Trimestre 6ème",
+                    CreatedAt = DateTime.UtcNow
+                }
+            );
+
+            // 10. MATIÈRES (Collège)
+            var matieres = new[]
+            {
+                new Matiere { Id = Guid.NewGuid(), Code = "MATH", Libelle = "Mathématiques", Coefficient = 4, CreatedAt = DateTime.UtcNow },
+                new Matiere { Id = Guid.NewGuid(), Code = "FRAN", Libelle = "Français", Coefficient = 4, CreatedAt = DateTime.UtcNow },
+                new Matiere { Id = Guid.NewGuid(), Code = "ANG", Libelle = "Anglais", Coefficient = 2, CreatedAt = DateTime.UtcNow },
+                new Matiere { Id = Guid.NewGuid(), Code = "SVT", Libelle = "SVT", Coefficient = 2, CreatedAt = DateTime.UtcNow },
+                new Matiere { Id = Guid.NewGuid(), Code = "HG", Libelle = "Histoire-Géographie", Coefficient = 2, CreatedAt = DateTime.UtcNow }
+            };
+            modelBuilder.Entity<Matiere>().HasData(matieres);
+        }
+    }
+}

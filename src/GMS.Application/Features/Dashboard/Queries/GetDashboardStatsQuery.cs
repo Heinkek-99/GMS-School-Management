@@ -1,25 +1,15 @@
 using GMS.Application.Common;
+using GMS.Infrastructure.Data;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
-namespace GMS.Application.Features.Dashboard.Queries;
-
-public record GetDashboardStatsQuery : IRequest<Result<DashboardStatsDto>>;
-
-public record DashboardStatsDto
+namespace GMS.Application.Features.Dashboard.Queries
 {
-    public int NombreEleves { get; init; }
-    public int NombreFamilles { get; init; }
-    public decimal TotalAEncaisser { get; init; }
-    public decimal TotalEncaisse { get; init; }
-    public decimal TauxRecouvrement { get; init; }
-    public int NombreFamillesImpayees { get; init; }
-    public List<TopImpayeDto> TopImpayes { get; init; }
-}
+    public class GetDashboardStatsQuery : IRequest<Result<DashboardStatsResponse>>
+    {
+        public Guid EcoleId { get; set; }
+        public DateTime? DateDebut { get; set; }
+        public DateTime? DateFin { get; set; }
+    }
 
-public record TopImpayeDto
-{
-    public Guid FamilleId { get; init; }
-    public string NomFamille { get; init; }
-    public decimal Solde { get; init; }
-    public int NombreEnfants { get; init; }
 }

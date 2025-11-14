@@ -13,6 +13,9 @@ public class Paiement : BaseEntity
     public string? NumeroReference { get; set; } // N° chèque, transaction
     public string? Observations { get; set; }
 
+    public Guid EcoleId { get; set; }
+    public Ecole Ecole { get; set; } = null!;
+    
     // Ventilation du paiement
     public ICollection<VentilationPaiement> Ventilations { get; set; } = new List<VentilationPaiement>();
 }

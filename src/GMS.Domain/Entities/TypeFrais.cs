@@ -8,6 +8,9 @@ public class TypeFrais : BaseEntity
     public bool EstRecurrent { get; set; } = false;
     public string Frequence { get; set; } = "Annuel"; // Annuel, Mensuel, Trimestriel, Ponctuel
     public decimal? MontantParDefaut { get; set; }
+
+    public Guid EcoleId { get; set; }
+    public Ecole Ecole { get; set; } = null!;
     // Navigation
     public ICollection<Frais> Frais { get; set; } = new List<Frais>();
 
